@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+
+  mysql-db-contas:
+    image: mysql:8.0
+    container_name: mysql-db-contas
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: contas
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3309:3306"  # Porta 3309 externa mapeada para a 3306 do MySQL no container
+    volumes:
+      - mysql-data-contas:/var/lib/mysql
+    networks:
+      - app-network
+
+  contas-service:
+    image: contas-service:latest
+    container_name: contas-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8091:8091"  # Porta 8091 externa
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db-contas:3306/contas
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_RABBITMQ_HOST: rabbitmq  # Adiciona o host do RabbitMQ, apontando para o container rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+    depends_on:
+      - mysql-db-contas
+      - rabbitmq  # Certifica-se de que o contas-service depende do RabbitMQ
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"  # Porta para acessar a UI do RabbitMQ
+    networks:
+      - app-network
+
+volumes:
+  mysql-data-contas:
+
+networks:
+  app-network:

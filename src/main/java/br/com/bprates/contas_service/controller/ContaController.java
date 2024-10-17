@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/contas")
 public class ContaController {
@@ -26,6 +28,11 @@ public class ContaController {
     @GetMapping(value = "{id}")
     public Conta obterPorId(@PathVariable Integer id) {
         return contaService.obterPorId(id);
+    }
+
+    @GetMapping(value = "cliente/{id}")
+    public List<Conta> obterContaPorClienteId(@PathVariable Integer id) {
+        return contaService.obterContasPorClienteId(id);
     }
 
     @PostMapping(value = "incluir")

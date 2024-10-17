@@ -20,6 +20,9 @@ public class Conta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull(message = "Conta deve ter um cliente vinculado")
+    private Integer clientID;
+
     @NotNull(message = "Toda conta deve inicializar com um valor")
     private Double saldo;
 
@@ -32,9 +35,10 @@ public class Conta {
 
     public Conta() {}
 
-    public Conta(Double saldo, String numeroConta) {
+    public Conta(Double saldo, String numeroConta, Integer clientID) {
         this.saldo = saldo;
         this.numeroConta = numeroConta;
+        this.clientID = clientID;
     }
 
     public Integer getId() {
@@ -69,12 +73,21 @@ public class Conta {
         this.transacoes = transacoes;
     }
 
+    public Integer getClientID() {
+        return clientID;
+    }
+
+    public void setClientID(Integer clientID) {
+        this.clientID = clientID;
+    }
+
     @Override
     public String toString() {
         return "Conta{" +
                 "id=" + id +
                 ", saldo=" + saldo +
                 ", numeroConta='" + numeroConta + '\'' +
+                ", id do cliente='" + clientID + '\'' +
                 ", transacoes=" + (transacoes != null ? transacoes.size() : 0) +
                 '}';
     }
